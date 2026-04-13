@@ -1,0 +1,22 @@
+{
+  "name": "bitcoin-spv-tutorial",
+  "version": "1.0.0",
+  "description": "Minimal working tutorial for Bitcoin SPV on Rootstock Testnet using Solidity",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "@types/mocha": "^10.0.6",
+    "@types/chai": "^4.3.14",
+    "@types/node": "^20.0.0",
+    "chai": "^4.3.7",
+    "ethers": "^6.8.0"
+  }
+}
