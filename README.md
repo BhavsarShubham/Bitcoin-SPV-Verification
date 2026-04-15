@@ -20,7 +20,142 @@ By the end of this guide, you will understand:
 * Gas optimization techniques for SPV verification
 
 ---
+## How to Run This Project
 
+Follow these steps to set up, compile, test, and deploy the Bitcoin SPV smart contract.
+
+### Prerequisites
+
+Before getting started, ensure you have installed:
+
+* **Node.js** (v16 or higher) - [Download here](https://nodejs.org/)
+* **npm** (comes with Node.js)
+* **Git** - [Download here](https://git-scm.com/)
+* A code editor (VS Code recommended)
+
+### Installation
+
+1. **Clone the repository** (or navigate to the project directory):
+   ```bash
+   cd bitcoin-spv-tutorial
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+   This installs Hardhat, TypeScript, testing libraries, and ethers.js.
+
+### Compilation
+
+Compile the Solidity smart contract to check for syntax errors:
+
+```bash
+npm run compile
+```
+
+This generates:
+* Compiled contract artifacts in `artifacts/`
+* TypeChain types in `typechain-types/` (for TypeScript support)
+
+### Testing
+
+Run the test suite to verify the smart contract logic:
+
+```bash
+npm run test
+```
+
+This executes all tests in the `test/` directory. The output will show:
+* Number of tests passed/failed
+* Gas usage per function
+* Any assertions that fail
+
+### Local Development (Optional)
+
+Start a local Hardhat node for development and debugging:
+
+```bash
+npm run node
+```
+
+This starts a local blockchain at `http://localhost:8545` that you can interact with.
+
+### Deployment to Rootstock Testnet
+
+To deploy the BitcoinSPV contract to Rootstock Testnet:
+
+1. **Set up your environment variables**:
+   
+   Create or edit the `.env` file in the root directory:
+   ```
+   PRIVATE_KEY=your_private_key_here
+   ```
+   
+   ⚠️ **Security Note**: Never commit `.env` to version control. Add it to `.gitignore`.
+
+2. **Get testnet funds**:
+   
+   Obtain test RBTC from the [Rootstock Testnet Faucet](https://faucet.rootstock.io/)
+
+3. **Create a deployment script** (optional):
+   
+   Create `scripts/deploy.ts`:
+   ```typescript
+   import { ethers } from "hardhat";
+
+   async function main() {
+     const BitcoinSPV = await ethers.getContractFactory("BitcoinSPV");
+     const contract = await BitcoinSPV.deploy();
+     await contract.deployed();
+     console.log("BitcoinSPV deployed to:", contract.address);
+   }
+
+   main().catch((error) => {
+     console.error(error);
+     process.exitCode = 1;
+   });
+   ```
+
+4. **Run the deployment script**:
+   ```bash
+   npx hardhat run scripts/deploy.ts --network rootstockTestnet
+   ```
+
+### Verifying Your Setup
+
+After compilation, verify everything worked:
+
+```bash
+npm run test
+```
+
+If tests pass, your environment is properly configured!
+
+### Common Commands Reference
+
+| Command | Purpose |
+|---------|---------|
+| `npm run compile` | Compile Solidity contracts |
+| `npm run test` | Run all tests |
+| `npm run node` | Start local development blockchain |
+| `npx hardhat verify <address> --network rootstockTestnet` | Verify contract on block explorer |
+
+### Troubleshooting
+
+**Issue**: "Cannot find module 'hardhat'"
+- **Solution**: Run `npm install` to install dependencies
+
+**Issue**: "Private key not found"
+- **Solution**: Check that `.env` file exists in the root directory with your `PRIVATE_KEY`
+
+**Issue**: Tests fail with compilation errors
+- **Solution**: Run `npm run compile` first, then `npm run test`
+
+**Issue**: Deployment fails with "Insufficient funds"
+- **Solution**: Ensure your wallet has test RBTC from the faucet
+
+---
 ## Understanding Rootstock’s Bitcoin Merge-Mining Model
 
 Rootstock is secured by Bitcoin through **merge mining**.
