@@ -46,6 +46,18 @@ contract BitcoinSPV {
 
     /**
      * @dev Parses an 80-byte raw Bitcoin block header
+     * 
+     * Bitcoin block headers contain critical information:
+     * - version (4 bytes): Protocol version number
+     * - prevHash (32 bytes): Hash of the previous block
+     * - merkleRoot (32 bytes): Root of the transaction Merkle tree
+     * - timestamp (4 bytes): Block creation time (Unix time)
+     * - bits (4 bytes): Encoded difficulty target (not used in simplified PoW)
+     * - nonce (4 bytes): Proof-of-Work value (tried to meet difficulty)
+     * 
+     * NOTE: The `bits` field encodes Bitcoin's actual difficulty target in compact form.
+     * In a production implementation, you would decode this to derive the actual target
+     * rather than accepting it from the caller. See TUTORIAL.md for details.
      */
     function parseHeader(bytes memory header) public pure returns (BlockHeader memory) {
         require(header.length == 80, "Invalid header length");
@@ -86,9 +98,28 @@ contract BitcoinSPV {
     }
 
     /**
-     * @dev Validates PoW against a highly simplified target
-     * NOTE: This is for educational purposes only. It does NOT implement full
-     * Bitcoin difficulty adjustment limits.
+     * @dev Validates PoW against a simplified target
+     * 
+     * IMPORTANT - Educational Simplification:
+     * This implementation accepts the target from the caller (simplifiedTarget parameter).
+     * This is a CRITICAL SECURITY DIFFERENCE from real Bitcoin validation:
+     * 
+     * ❌ WHAT WE DON'T DO:
+     *    - We don't validate that the target follows Bitcoin's difficulty adjustment rules
+     *    - We don't enforce that targets only decrease/increase within bounds (2x)
+     *    - An attacker could pass MaxUint256 and bypass PoW validation entirely
+     * 
+     * ✓ WHAT WE DO:
+     *    - We verify the block hash meets the claimed target
+     *    - We check chain continuity (previous block is known)
+     * 
+     * In production, you would:
+     * 1. Decode the `bits` field from the header to get the actual target
+     * 2. Validate difficulty adjustment rules between blocks
+     * 3. Reject blocks where difficulty jumped unexpectedly
+     * 
+     * For this tutorial, we accept the target as a parameter to focus on core concepts.
+     * See TUTORIAL.md for a full explanation of Bitcoin difficulty targeting.
      */
     function checkPoW(bytes memory header, uint256 simplifiedTarget) public pure returns (bool) {
         bytes32 blockHash = hash256(header);
