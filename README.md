@@ -9,12 +9,12 @@ A smart contract implementation for verifying Bitcoin transactions on Rootstock 
 This project allows Solidity smart contracts to verify Bitcoin transactions on Rootstock by:
 
 - Parsing Bitcoin block headers (80 bytes)
+- Validating Bitcoin Proof-of-Work
 - Verifying Merkle proofs for transaction inclusion
 - Leveraging Rootstock's Bitcoin merge-mining security model
 
-**Key Contracts:**
-- `BitcoinHeaderParser` — Parses raw 80-byte Bitcoin block headers
-- `SPV Verification Contract` — Verifies Merkle proofs and confirms transaction inclusion
+**Key Contract:**
+- `BitcoinSPV` — A unified contract that parses Bitcoin block headers, validates PoW, and verifies Merkle proofs for transaction inclusion
 
 ---
 
@@ -58,13 +58,19 @@ npm run node
 
 ### 1. Configure Environment
 
-Create a `.env` file in the root directory:
+Copy the `.env.example` file to `.env` and add your private key:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and add your private key:
 
 ```
 PRIVATE_KEY=your_private_key_here
 ```
 
-> ⚠️ Never commit `.env` to version control.
+> ⚠️ Never commit `.env` to version control. The `.env` file is listed in `.gitignore` to prevent accidental secret leaks.
 
 ### 2. Get Testnet Funds
 
@@ -76,6 +82,8 @@ Grab test RBTC from the [Rootstock Testnet Faucet](https://faucet.rootstock.io/)
 npx hardhat run scripts/deploy.ts --network rootstockTestnet
 ```
 
+The script will output the deployed contract address and additional guidance.
+
 ---
 
 ## Commands Reference
@@ -86,6 +94,21 @@ npx hardhat run scripts/deploy.ts --network rootstockTestnet
 | `npm run test` | Run all tests |
 | `npm run node` | Start local development blockchain |
 | `npx hardhat verify <address> --network rootstockTestnet` | Verify contract on block explorer |
+
+---
+
+## Tutorial & Learning Resources
+
+This repository includes comprehensive documentation explaining Bitcoin SPV, merge-mining, and Merkle proofs:
+
+- **[TUTORIAL.md](./TUTORIAL.md)** — Step-by-step guide covering:
+  - Bitcoin block structure and parsing
+  - Proof-of-Work validation
+  - Merkle proofs and transaction verification
+  - How merge-mining secures Rootstock
+  - Practical examples and code walkthroughs
+
+Start with [TUTORIAL.md](./TUTORIAL.md) if you're new to Bitcoin SPV.
 
 ---
 

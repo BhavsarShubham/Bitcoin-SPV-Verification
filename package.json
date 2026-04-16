@@ -6,7 +6,9 @@
   "scripts": {
     "test": "hardhat test",
     "compile": "hardhat compile",
-    "node": "hardhat node"
+    "node": "hardhat node",
+    "deploy": "hardhat run scripts/deploy.ts --network rootstockTestnet",
+    "deploy:local": "hardhat run scripts/deploy.ts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
